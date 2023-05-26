@@ -118,5 +118,54 @@ public class CategorySeviceImpl implements ICategoryService{
         return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> update(Category category, Long id) {
+
+            CategoryResponseRest response = new CategoryResponseRest();
+            List<Category> list = new ArrayList<>();
+
+            try{
+
+                Optional<Category> categorySearch = categoryDao.findById(id);
+
+                if (categorySearch.isPresent()) {
+
+                    categorySearch.get().setName(category.getName());
+                    categorySearch.get().setDescription(category.getDescription());
+                    Category categoryUpdate = categoryDao.save(categorySearch.get());
+
+                    if (categoryUpdate != null) {
+
+                        list.add(categoryUpdate);
+                        response.getCategoryResponse().setCategory(list);
+                        response.setMetadata("Respuesta ok", "00", "categoria actualizada");
+
+                    } else {
+
+                        response.setMetadata("Respuesta nok", "-1", "categoria no actualizada");
+                        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+
+                    }
+
+                } else {
+
+                    response.setMetadata("Respuesta nok", "-1", "Categoria no encontrada");
+                    return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+
+                }
+    }
+
+    catch (Exception e) {
+
+        response.setMetadata("Respuesta nok", "-1", "Error al grabar por categoria");
+        e.getStackTrace();
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+
 }
 
