@@ -139,7 +139,6 @@ public class ProductServiceImpl implements IProductService{
     public ResponseEntity<ProductResponseRest> deleteById(Long id) {
         ProductResponseRest response = new ProductResponseRest();
 
-
         try {
             //borrar producto por id
             productDao.deleteById(id);
@@ -187,5 +186,60 @@ public class ProductServiceImpl implements IProductService{
 
         }
         return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ProductResponseRest> update(Long id, Long categoryId, Product product) {
+        ProductResponseRest response = new ProductResponseRest();
+        List<Product> list = new ArrayList<>();
+
+        try {
+            //buscar categoria por id
+            Optional<Category> category = categoryDao.findById(categoryId);
+
+            if(category.isPresent()){
+                product.setCategory(category.get());
+            }else {
+                response.setMetadata("Respuesta nok", "-1", "Categoria no encontrada");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+            //buscamos producto a actualizar
+            Optional<Product> productSearch = productDao.findById(id);
+
+            if(productSearch.isPresent()) {
+                //actualizamos producto
+
+                productSearch.get().setName(product.getName());
+                productSearch.get().setStock(product.getStock());
+                productSearch.get().setPrice(product.getPrice());
+                productSearch.get().setPicture(product.getPicture());
+                productSearch.get().setCategory(product.getCategory());
+
+                //salvamos producto en base de datos
+                Product  productToUpdate = productDao.save(productSearch.get());
+
+                if (productToUpdate != null){
+                    list.add(productToUpdate);
+                    response.setMetadata("Respuesta ok", "00", "Producto actualizado");
+                    response.getProduct().setProducts(list);
+                }else {
+                    response.setMetadata("Respuesta nok", "-1", "Producto no actualizado");
+                    return new ResponseEntity<ProductResponseRest>(response, HttpStatus.BAD_REQUEST);
+                }
+
+            }else {
+                response.setMetadata("Respuesta nok", "-1", "Producto no actualizado");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setMetadata("Respuesta nok", "-1", "Error al actualizar producto");
+            return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+
     }
 }
