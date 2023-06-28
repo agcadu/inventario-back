@@ -24,7 +24,7 @@ public class CategoryRestController {
         return response;
     }
 
-    // get de una categoria por id4
+    // get de una categoria por id
     @GetMapping("/categories/{id}")
     public ResponseEntity<CategoryResponseRest> searchCategoriesById(@PathVariable Long id) {
 
