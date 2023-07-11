@@ -1,9 +1,13 @@
 package com.agcadu.inventory.controller;
 
 import com.agcadu.inventory.model.Product;
+import com.agcadu.inventory.response.CategoryResponseRest;
 import com.agcadu.inventory.response.ProductResponseRest;
 import com.agcadu.inventory.services.IProductService;
+import com.agcadu.inventory.util.CategoryExcelExporter;
+import com.agcadu.inventory.util.ProductExcelExport;
 import com.agcadu.inventory.util.Util;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,5 +88,18 @@ public class ProductRestController {
         ResponseEntity<ProductResponseRest> response = productService.update(id, categoryId, product);
 
         return response;
+    }
+
+    @GetMapping("/products/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=productos.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        ResponseEntity<ProductResponseRest> productsResponse = productService.search();
+        ProductExcelExport excelExporter = new ProductExcelExport(productsResponse.getBody().getProduct().getProducts());
+        excelExporter.export(response);
+
     }
 }

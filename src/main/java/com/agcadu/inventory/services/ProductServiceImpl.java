@@ -154,7 +154,7 @@ public class ProductServiceImpl implements IProductService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<ProductResponseRest> search() {
         ProductResponseRest response = new ProductResponseRest();
         List<Product> list = new ArrayList<>();

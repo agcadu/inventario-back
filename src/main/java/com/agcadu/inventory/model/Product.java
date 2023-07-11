@@ -28,6 +28,6 @@ public class Product  implements Serializable {
         private Category category;
 
 
-        @Column(name = "picture", length = 10000)
+        @Column(name = "picture", length = 100000)
         private byte[] picture;
 }

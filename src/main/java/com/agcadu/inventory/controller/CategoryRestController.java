@@ -4,9 +4,13 @@ package com.agcadu.inventory.controller;
 import com.agcadu.inventory.model.Category;
 import com.agcadu.inventory.response.CategoryResponseRest;
 import com.agcadu.inventory.services.ICategoryService;
+import com.agcadu.inventory.util.CategoryExcelExporter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -51,6 +55,19 @@ public class CategoryRestController {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.deleteById(id);
         return response;
+    }
+
+    @GetMapping("/categories/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=categorias.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        ResponseEntity<CategoryResponseRest> categoryResponse = categoryService.search();
+        CategoryExcelExporter excelExporter = new CategoryExcelExporter(categoryResponse.getBody().getCategoryResponse().getCategory());
+        excelExporter.export(response);
+
     }
 
 }
