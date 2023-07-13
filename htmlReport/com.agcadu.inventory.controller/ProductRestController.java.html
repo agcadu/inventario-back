@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductRestController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ProductRestControllerTest Coverage Results, CategoryRestControllerTest Coverage Results, InventoryApplication Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.agcadu.inventory.controller</a> &gt; <span class="el_source">ProductRestController.java</span></div><h1>ProductRestController.java</h1><pre class="source lang-java linenums">package com.agcadu.inventory.controller;
+
+import com.agcadu.inventory.model.Product;
+import com.agcadu.inventory.response.CategoryResponseRest;
+import com.agcadu.inventory.response.ProductResponseRest;
+import com.agcadu.inventory.services.IProductService;
+import com.agcadu.inventory.util.CategoryExcelExporter;
+import com.agcadu.inventory.util.ProductExcelExport;
+import com.agcadu.inventory.util.Util;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@CrossOrigin(origins= {&quot;http://localhost:4200&quot;})
+@RestController
+@RequestMapping(&quot;/api/v1&quot;)
+public class ProductRestController {
+
+    private IProductService productService;
+<span class="fc" id="L23">    public ProductRestController(IProductService productService) {</span>
+<span class="fc" id="L24">        this.productService = productService;</span>
+<span class="fc" id="L25">    }</span>
+
+
+
+    @PostMapping(&quot;/products&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; save(
+            @RequestParam(&quot;picture&quot;)MultipartFile picture,
+            @RequestParam(&quot;name&quot;)String name,
+            @RequestParam(&quot;price&quot;)int price,
+            @RequestParam(&quot;stock&quot;)int stock,
+            @RequestParam(&quot;categoryId&quot;)Long categoryId) throws IOException
+    {
+<span class="fc" id="L37">        Product product = new Product();</span>
+<span class="fc" id="L38">        product.setName(name);</span>
+<span class="fc" id="L39">        product.setPrice(price);</span>
+<span class="fc" id="L40">        product.setStock(stock);</span>
+<span class="fc" id="L41">        product.setPicture(Util.compressZLib(picture.getBytes()));</span>
+
+<span class="fc" id="L43">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.save(product, categoryId);</span>
+
+
+<span class="fc" id="L46">        return response;</span>
+    }
+
+    @GetMapping(&quot;/products/{id}&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; searchById(@PathVariable Long id){
+<span class="fc" id="L51">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.searchById(id);</span>
+<span class="fc" id="L52">        return response;</span>
+    }
+
+    @GetMapping(&quot;/products/filter/{name}&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; searchByName(@PathVariable String name){
+<span class="fc" id="L57">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.searchByName(name);</span>
+<span class="fc" id="L58">        return response;</span>
+    }
+
+    @DeleteMapping(&quot;/products/{id}&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; deleteById(@PathVariable Long id){
+<span class="fc" id="L63">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.deleteById(id);</span>
+<span class="fc" id="L64">        return response;</span>
+    }
+
+    @GetMapping(&quot;/products&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; search(){
+<span class="fc" id="L69">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.search();</span>
+<span class="fc" id="L70">        return response;</span>
+    }
+
+    @PutMapping(&quot;/products/{id}&quot;)
+    public ResponseEntity&lt;ProductResponseRest&gt; update(
+            @PathVariable Long id,
+            @RequestParam(&quot;categoryId&quot;) Long categoryId,
+            @RequestParam(&quot;picture&quot;)MultipartFile picture,
+            @RequestParam(&quot;name&quot;)String name,
+            @RequestParam(&quot;price&quot;)int price,
+            @RequestParam(&quot;stock&quot;)int stock) throws IOException
+    {
+<span class="fc" id="L82">        Product product = new Product();</span>
+<span class="fc" id="L83">        product.setName(name);</span>
+<span class="fc" id="L84">        product.setPrice(price);</span>
+<span class="fc" id="L85">        product.setStock(stock);</span>
+<span class="fc" id="L86">        product.setPicture(Util.compressZLib(picture.getBytes()));</span>
+
+<span class="fc" id="L88">        ResponseEntity&lt;ProductResponseRest&gt; response = productService.update(id, categoryId, product);</span>
+
+<span class="fc" id="L90">        return response;</span>
+    }
+
+    @GetMapping(&quot;/products/export/excel&quot;)
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+<span class="nc" id="L95">        response.setContentType(&quot;application/octet-stream&quot;);</span>
+<span class="nc" id="L96">        String headerKey = &quot;Content-Disposition&quot;;</span>
+<span class="nc" id="L97">        String headerValue = &quot;attachment; filename=productos.xlsx&quot;;</span>
+<span class="nc" id="L98">        response.setHeader(headerKey, headerValue);</span>
+
+<span class="nc" id="L100">        ResponseEntity&lt;ProductResponseRest&gt; productsResponse = productService.search();</span>
+<span class="nc" id="L101">        ProductExcelExport excelExporter = new ProductExcelExport(productsResponse.getBody().getProduct().getProducts());</span>
+<span class="nc" id="L102">        excelExporter.export(response);</span>
+
+<span class="nc" id="L104">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
