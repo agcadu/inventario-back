@@ -21,7 +21,7 @@ cd inventory
 3. Ejecuta Docker Compose para levantar la aplicación y la base de datos:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 La API ahora estará disponible en `http://localhost:8080`.
