@@ -17,11 +17,11 @@ import java.util.Optional;
 @Service
 public class CategorySeviceImpl implements ICategoryService{
 
-    @Autowired//Inyecta la dependencia de todos los metodos de la clase ICategoryDao como un new ICategoryDao()
+    @Autowired
     private ICategoryDao categoryDao;
 
     @Override
-    @Transactional(readOnly = true)//Solo lectura de la base de datos
+    @Transactional(readOnly = true)
     public ResponseEntity<CategoryResponseRest> search() {
 
         CategoryResponseRest response = new CategoryResponseRest();

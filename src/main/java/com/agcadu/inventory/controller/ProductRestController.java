@@ -1,10 +1,8 @@
 package com.agcadu.inventory.controller;
 
 import com.agcadu.inventory.model.Product;
-import com.agcadu.inventory.response.CategoryResponseRest;
 import com.agcadu.inventory.response.ProductResponseRest;
 import com.agcadu.inventory.services.IProductService;
-import com.agcadu.inventory.util.CategoryExcelExporter;
 import com.agcadu.inventory.util.ProductExcelExport;
 import com.agcadu.inventory.util.Util;
 import jakarta.servlet.http.HttpServletResponse;
