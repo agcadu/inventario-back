@@ -1,4 +1,4 @@
-# Inventory API - Backend con Spring Boot y Java 17
+# Inventory API REST
 
 La API de Inventory es una aplicación backend desarrollada con Spring Boot y Java 17 que permite gestionar inventarios y sus productos asociados, así como también administrar las categorías de los productos. La API proporciona varios endpoints para interactuar con la base de datos, y para facilitar su uso, se incluye un Docker Compose para ejecutar la aplicación y una base de datos PostgreSQL en contenedores Docker.
 
