@@ -1,6 +1,6 @@
-# Inventorio API REST
+# Inventario API REST
 
-La API de Inventorio es una aplicación backend desarrollada con Spring Boot 3 y Java 17 que permite gestionar inventarios y sus productos asociados, así como también administrar las categorías de los productos. La API proporciona varios endpoints para interactuar con la base de datos, y para facilitar su uso, se incluye un Docker Compose para ejecutar la aplicación y una base de datos PostgreSQL en contenedores Docker.
+La API de Inventario es una aplicación backend desarrollada con Spring Boot 3 y Java 17 que permite gestionar inventarios y sus productos asociados, así como también administrar las categorías de los productos.Gestionamos las imágenes comprimiéndolas en base 64 y podremos exportar los datos a archivos Excel. La API proporciona varios endpoints para interactuar con la base de datos, y para facilitar su uso, se incluye un Docker Compose para ejecutar la aplicación y una base de datos PostgreSQL en contenedores Docker.
 
 ## Instalación y Ejecución
 
